@@ -1,5 +1,6 @@
 package com.cxgitbot;
 
+import com.cxgitbot.proxies.SeparatorProxy;
 import com.cxgitbot.utils.ISeparator;
 import com.cxgitbot.utils.IReply;
 import com.cxgitbot.utils.impl.Replier;
@@ -13,9 +14,9 @@ import net.mamoe.mirai.event.events.NudgeEvent;
 
 public final class Core extends JavaPlugin {
     public static final Core INSTANCE = new Core();
-    private static  final IReply replier = new Replier();
+    public static  final IReply replier = new Replier();
 
-    private final ISeparator _groupSeparator = new SeparatorDefault();
+    private final ISeparator _groupSeparator = new SeparatorProxy();
 
     private Core() {
         super(new JvmPluginDescriptionBuilder("com.cxgitbot.core", "0.1.0")
@@ -23,31 +24,13 @@ public final class Core extends JavaPlugin {
                 .author("Feast")
                 .build());
     }
-    private static  final  long QunId = 631743342;
+    public static final long QunId = 631743342L;
+    public static final long AuthorId = 2464939515L;
     @Override
     public void onEnable() {
         getLogger().info("Core 插件启动");
-        GlobalEventChannel.INSTANCE.subscribeAlways(GroupMessageEvent.class, g -> {
-            //监听群消息
-            getLogger().info(g.getMessage().contentToString());
-            if(g.getGroup().getId()==QunId ) {
-                _groupSeparator.Receive(g);
-
-
-                String msg = g.getMessage().contentToString();
-                String reply = replier.ReplyMessage(g.getSender(), msg);
-                if(!reply.equals("")) {
-                    g.getGroup().sendMessage(reply);
-                }
-            }
-        });
-        GlobalEventChannel.INSTANCE.subscribeAlways(NudgeEvent.class, n -> {
-            //群戳戳
-            if(n.getBot().getId() == n.getTarget().getId() && n.getSubject().getId() == QunId) {
-                String reply = replier.ReplyTick(n.getFrom(), n.getAction());
-                n.getSubject().sendMessage(reply);
-            }
-        });
+        GlobalEventChannel.INSTANCE.subscribeAlways(GroupMessageEvent.class, _groupSeparator::Receive);
+        GlobalEventChannel.INSTANCE.subscribeAlways(NudgeEvent.class, _groupSeparator::Nudge);
         GlobalEventChannel.INSTANCE.subscribeAlways(FriendMessageEvent.class, f -> {
             //监听好友消息
             getLogger().info(f.getMessage().contentToString());
