@@ -47,7 +47,7 @@ public class Replier implements IReply {
         timer.schedule(timerTask, 5, 1000 * 60);
     }
     @Override
-    public String Reply(Member member, String input) {
+    public String ReplyMessage(Member member, String input) {
         Tension t = analyzer.AnalyzeTension(input);
         String ret  = "";
         if(input.equals("莎士比亚曾经说过")){
@@ -88,7 +88,7 @@ public class Replier implements IReply {
     private static final HashMap<Long,TickObject> TickMembers = new HashMap<>();
     private static final HashMap<Integer, List<String>> Levels = new HashMap<>();
     @Override
-    public String Reply(UserOrBot userOrBot, String input) {
+    public String ReplyTick(UserOrBot userOrBot, String input) {
         String ret = "";
         if(TickMembers.containsKey(userOrBot.getId())){
             TickObject tick = TickMembers.get(userOrBot.getId());

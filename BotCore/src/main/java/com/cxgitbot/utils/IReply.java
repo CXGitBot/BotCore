@@ -9,6 +9,13 @@ public interface IReply {
         Negative,
         Medium,
     }
-    String Reply(Member member, String input);
-    String Reply(UserOrBot userOrBot,String input);
+    String ReplyMessage(Member member, String input);
+
+    /**
+     * 对戳戳的回复
+     * @param userOrBot 发送者
+     * @param input 输入
+     * @return 输出
+     */
+    String ReplyTick(UserOrBot userOrBot, String input);
 }
