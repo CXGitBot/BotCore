@@ -17,7 +17,7 @@ public abstract class GroupBase implements IGroup {
     protected final HashMap<Long, IMember> Members = new HashMap<>();
     @Override
     public IMember Create(Member member) {
-        return new MemberDefault(member);
+        return new MemberDefault(member,this);
     }
     @Override
     public IMember Get(Member member) {

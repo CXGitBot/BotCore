@@ -4,13 +4,13 @@ import com.cxgitbot.utils.impl.GroupBase;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 
+import java.util.HashMap;
+
 import static sun.font.FontUtilities.getLogger;
 
 
 public class GroupDefault extends GroupBase {
-    public GroupDefault(Group group) {
-        super(group);
-    }
+    public GroupDefault(Group group) {super(group);}
 
     @Override
     public void Receive(GroupMessageEvent message) {
