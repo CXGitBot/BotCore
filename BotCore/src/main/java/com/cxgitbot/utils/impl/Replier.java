@@ -1,5 +1,6 @@
 package com.cxgitbot.utils.impl;
 
+import com.cxgitbot.Core;
 import com.cxgitbot.utils.IAnalyzer;
 import com.cxgitbot.utils.IReply;
 import net.mamoe.mirai.contact.Member;
@@ -61,7 +62,7 @@ public class Replier implements IReply {
                     case Negative:
                         ret = "不测拉倒";
                 }
-
+                return ret;
             }
             if(input.contains("Bot") && ( input.contains("地址") || input.contains("git") || input.contains("Git"))){
                 switch (t) {
@@ -72,7 +73,27 @@ public class Replier implements IReply {
                     case Negative:
                         ret  = "¿";
                 }
+                return ret;
             }
+            if(member.getId()== Core.AuthorId){
+                if(input.contains("重启")){
+                    return ret = "好嘞";
+                }
+            }
+        }
+        if(member.getId()== Core.AuthorId){
+            if(input.contains("来人")){
+                return ret = "来了嗷";
+            }
+        }
+        if(input.contains("666")){
+            return ret = input;
+        }
+        if(input.equals("?")||input.equals("？")){
+            return ret = "¿";
+        }
+        if(input.equals("¿")){
+            return ret = "?";
         }
         return ret;
     }
