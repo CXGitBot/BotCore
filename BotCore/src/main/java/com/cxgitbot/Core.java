@@ -11,6 +11,9 @@ import net.mamoe.mirai.event.GlobalEventChannel;
 import net.mamoe.mirai.event.events.FriendMessageEvent;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.event.events.NudgeEvent;
+import net.mamoe.mirai.message.data.Image;
+import net.mamoe.mirai.message.data.MessageChain;
+import net.mamoe.mirai.message.data.MessageChainBuilder;
 
 public final class Core extends JavaPlugin {
     public static final Core INSTANCE = new Core();
@@ -34,6 +37,18 @@ public final class Core extends JavaPlugin {
         GlobalEventChannel.INSTANCE.subscribeAlways(FriendMessageEvent.class, f -> {
             //监听好友消息
             getLogger().info(f.getMessage().contentToString());
+           if(f.getMessage().contains(Image.Key)) {
+               Image i = f.getMessage().get(Image.Key);
+               MessageChain builder = new MessageChainBuilder()
+                       //.append(Image.fromId("{AE454B71-6F72-D12A-9DA9-6BF75DA56012}.jpg"))
+                       .append(Image.fromId(i.getImageId()))
+                       .build();
+               if (f.getSender().getId() == Core.AuthorId) {
+                   f.getSender().sendMessage(builder);
+               }
+           }
+
+
         });
     }
 }

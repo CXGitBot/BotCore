@@ -2,6 +2,8 @@ package com.cxgitbot.utils;
 
 import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.contact.UserOrBot;
+import net.mamoe.mirai.message.data.Message;
+import net.mamoe.mirai.message.data.MessageChain;
 
 public interface IReply {
     enum Tension{
@@ -9,7 +11,8 @@ public interface IReply {
         Negative,
         Medium,
     }
-    String ReplyMessage(Member member, String input);
+    Message ReplyMessage(Member member, MessageChain input);
+
 
     /**
      * 对戳戳的回复

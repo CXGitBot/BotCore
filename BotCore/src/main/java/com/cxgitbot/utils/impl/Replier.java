@@ -5,6 +5,11 @@ import com.cxgitbot.utils.IAnalyzer;
 import com.cxgitbot.utils.IReply;
 import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.contact.UserOrBot;
+import net.mamoe.mirai.message.data.Image;
+import net.mamoe.mirai.message.data.Message;
+import net.mamoe.mirai.message.data.MessageChain;
+import net.mamoe.mirai.message.data.MessageChainBuilder;
+import org.graalvm.compiler.graph.Node;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -46,57 +51,90 @@ public class Replier implements IReply {
         timer.schedule(timerTask, 5, 1000 * 60);
     }
     @Override
-    public String ReplyMessage(Member member, String input) {
+    public Message ReplyMessage(Member member, MessageChain msg) {
+        if(msg.contains(Image.Key)){
+            Image i = msg.get(Image.Key);
+            if(Images.size()>50){
+                Images.remove(0);
+            }
+            Images.add(i);
+            Core.INSTANCE.getLogger().info("存了一个表情包："+i.contentToString());
+        }
+        String input = msg.contentToString();
+        String ret  = "";
+        ret = NormalInput(input);
+        if(!ret.equals("")){
+            return new MessageChainBuilder().append(ret).build();
+        }
+        if(input.equals("寄")||input.contains("寄了")){
+            return new MessageChainBuilder()
+                    .append(Image.fromId("{C703B9F9-F9F9-CFB1-8E17-BCB9B2D63E5F}.gif"))
+                    .build();
+        }
+        ret = FunctionInput(member,input);
+        if(!ret.equals("干嘛") && !ret.equals("")){
+            return new MessageChainBuilder().append(ret).build();
+        }else if(ret.equals("干嘛")){
+            return new MessageChainBuilder()
+                    .append(Images.get(new Random().nextInt(Images.size())))
+                    .build();
+        }
+        return null;
+    }
+    private String FunctionInput(Member member, String input){
         Tension t = analyzer.AnalyzeTension(input);
         String ret  = "";
-        if(input.equals("莎士比亚曾经说过")){
-            return "安全通訊協定出現錯誤，無法建立與伺服器的安全連接。";
-        }
         if(input.contains("Bot")){
             if(input.contains("测试")){
                 switch (t){
                     case Positive:
                     case Medium:
-                        ret = "你满意了吧";
-                        break;
-                    case Negative:
-                        ret = "不测拉倒";
+                        return ret = "你满意了吧";
+                        case Negative:
+                        return ret = "不测拉倒";
                 }
-                return ret;
             }
             if(input.contains("Bot") && ( input.contains("地址") || input.contains("git") || input.contains("Git"))){
                 switch (t) {
                     case Positive:
                     case Medium:
-                        ret = "我核心的地址是：\n https://github.com/CXGitBot/BotCore \n" + "欢迎对我进行构建~";
-                        break;
+                        return  ret = "我核心的地址是：\n https://github.com/CXGitBot/BotCore \n" + "欢迎对我进行构建~";
                     case Negative:
-                        ret  = "¿";
+                        return  ret  = "¿";
                 }
-                return ret;
             }
             if(member.getId()== Core.AuthorId){
                 if(input.contains("重启")){
                     return ret = "好嘞";
                 }
             }
+            return ret = "干嘛";
         }
         if(member.getId()== Core.AuthorId){
             if(input.contains("来人")){
-                return ret = "来了嗷";
+               return ret = "来了嗷";
             }
         }
-        if(input.contains("666")){
+        return ret;
+    }
+    private String NormalInput(String input) {
+        String ret = "";
+        if (input.equals("莎士比亚曾经说过")) {
+            return ret = "安全通訊協定出現錯誤，無法建立與伺服器的安全連接。";
+        }
+        if (input.contains("666")) {
             return ret = input;
         }
-        if(input.equals("?")||input.equals("？")){
+        if (input.equals("?") || input.equals("？")) {
             return ret = "¿";
         }
-        if(input.equals("¿")){
+        if (input.equals("¿")) {
             return ret = "?";
         }
         return ret;
     }
+
+    private List<Image> Images = new ArrayList<>();
 
     static class TickObject{
         int Count;

@@ -5,6 +5,7 @@ import com.cxgitbot.utils.impl.GroupBase;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.event.events.NudgeEvent;
+import net.mamoe.mirai.message.data.Message;
 
 public class CXJKGroup extends GroupBase {
     public CXJKGroup(Group group) {
@@ -14,10 +15,9 @@ public class CXJKGroup extends GroupBase {
 
     @Override
     public void Receive(GroupMessageEvent message) {
-        String ret = Core.replier.ReplyMessage(message.getSender(),message.getMessage().contentToString());
-        if(!ret.equals("")){
-            _group.sendMessage(ret);
-        }
+        Message ret = Core.replier.ReplyMessage(message.getSender(),message.getMessage());
+       if(ret!=null)
+           _group.sendMessage(ret);
     }
 
     @Override
