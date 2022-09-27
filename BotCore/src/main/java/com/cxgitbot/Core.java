@@ -1,8 +1,10 @@
 package com.cxgitbot;
 
 import com.cxgitbot.proxies.SeparatorProxy;
+import com.cxgitbot.utils.IConfigurable;
 import com.cxgitbot.utils.ISeparator;
 import com.cxgitbot.utils.IReply;
+import com.cxgitbot.utils.impl.Configurable;
 import com.cxgitbot.utils.impl.Replier;
 import com.cxgitbot.working.SeparatorDefault;
 import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
@@ -20,7 +22,7 @@ public final class Core extends JavaPlugin {
     public static  final IReply replier = new Replier();
 
     private final ISeparator _groupSeparator = new SeparatorProxy();
-
+    public final IConfigurable _configure = new Configurable();
     private Core() {
         super(new JvmPluginDescriptionBuilder("com.cxgitbot.core", "0.1.0")
                 .name("Core")
@@ -37,18 +39,43 @@ public final class Core extends JavaPlugin {
         GlobalEventChannel.INSTANCE.subscribeAlways(FriendMessageEvent.class, f -> {
             //监听好友消息
             getLogger().info(f.getMessage().contentToString());
-           if(f.getMessage().contains(Image.Key)) {
-               Image i = f.getMessage().get(Image.Key);
-               MessageChain builder = new MessageChainBuilder()
-                       //.append(Image.fromId("{AE454B71-6F72-D12A-9DA9-6BF75DA56012}.jpg"))
-                       .append(Image.fromId(i.getImageId()))
-                       .build();
-               if (f.getSender().getId() == Core.AuthorId) {
-                   f.getSender().sendMessage(builder);
-               }
+           if(f.getSender().getId() == Core.AuthorId) {
+                switch (f.getMessage().contentToString()){
+                    case "/help":
+                        f.getSender().sendMessage("/配置状态 用于显示当前配置的状态\n" +
+                                "/配置 用户开启配置\n" +
+                                "/取消 放弃当前进行的配置\n" +
+                                "/确认 确认当前的配置\n");
+                        break;
+                    case "/配置状态":
+                        f.getSender().sendMessage(_configure.StatusToString());
+                        break;
+                    case "/配置":
+                        IConfigurable.Status s = _configure.Start();
+                        f.getSender().sendMessage(_configure.StatusToString());
+                        break;
+                    case "/取消":
+                        _configure.Reset();
+                        f.getSender().sendMessage(_configure.StatusToString());
+                        break;
+                    case "/确认":
+                        _configure.Finish();
+                        f.getSender().sendMessage(_configure.StatusToString());
+                    default:
+                        switch (_configure.CurrentStatus()){
+                            case WaitingForKey:
+                                _configure.Configure(f.getMessage().contentToString());
+                                f.getSender().sendMessage(_configure.StatusToString());
+                                break;
+                            case WaitingForValue:
+                                _configure.Configure(f.getMessage());
+                                f.getSender().sendMessage(_configure.StatusToString());
+                                break;
+                            case Nothing:
+                                f.getSender().sendMessage(_configure.Trigger(f.getMessage()));
+                        }
+                }
            }
-
-
         });
     }
 }

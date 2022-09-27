@@ -61,8 +61,7 @@ public class Replier implements IReply {
             Core.INSTANCE.getLogger().info("存了一个表情包："+i.contentToString());
         }
         String input = msg.contentToString();
-        String ret  = "";
-        ret = NormalInput(input);
+        String ret = NormalInput(input);
         if(!ret.equals("")){
             return new MessageChainBuilder().append(ret).build();
         }
@@ -72,14 +71,15 @@ public class Replier implements IReply {
                     .build();
         }
         ret = FunctionInput(member,input);
-        if(!ret.equals("干嘛") && !ret.equals("")){
-            return new MessageChainBuilder().append(ret).build();
-        }else if(ret.equals("干嘛")){
+        if(ret.equals("干嘛")){
             return new MessageChainBuilder()
                     .append(Images.get(new Random().nextInt(Images.size())))
                     .build();
+        }else if(!ret.equals("")){
+            return new MessageChainBuilder().append(ret).build();
         }
-        return null;
+
+        return Core.INSTANCE._configure.Trigger(msg);
     }
     private String FunctionInput(Member member, String input){
         Tension t = analyzer.AnalyzeTension(input);
@@ -119,9 +119,6 @@ public class Replier implements IReply {
     }
     private String NormalInput(String input) {
         String ret = "";
-        if (input.equals("莎士比亚曾经说过")) {
-            return ret = "安全通訊協定出現錯誤，無法建立與伺服器的安全連接。";
-        }
         if (input.contains("666")) {
             return ret = input;
         }
