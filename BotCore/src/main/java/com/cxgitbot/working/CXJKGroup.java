@@ -4,6 +4,7 @@ import com.cxgitbot.Core;
 import com.cxgitbot.utils.impl.GroupBase;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
+import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.event.events.NudgeEvent;
 import net.mamoe.mirai.message.data.Message;
 

@@ -6,16 +6,13 @@ import com.cxgitbot.utils.ISeparator;
 import com.cxgitbot.utils.IReply;
 import com.cxgitbot.utils.impl.Configurable;
 import com.cxgitbot.utils.impl.Replier;
-import com.cxgitbot.working.SeparatorDefault;
 import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescriptionBuilder;
 import net.mamoe.mirai.event.GlobalEventChannel;
 import net.mamoe.mirai.event.events.FriendMessageEvent;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
+import net.mamoe.mirai.event.events.MessageRecallEvent;
 import net.mamoe.mirai.event.events.NudgeEvent;
-import net.mamoe.mirai.message.data.Image;
-import net.mamoe.mirai.message.data.MessageChain;
-import net.mamoe.mirai.message.data.MessageChainBuilder;
 
 public final class Core extends JavaPlugin {
     public static final Core INSTANCE = new Core();
@@ -35,6 +32,8 @@ public final class Core extends JavaPlugin {
     public void onEnable() {
         getLogger().info("Core 插件启动");
         GlobalEventChannel.INSTANCE.subscribeAlways(GroupMessageEvent.class, _groupSeparator::Receive);
+        GlobalEventChannel.INSTANCE.subscribeAlways(MessageRecallEvent.class,r->{
+        });
         GlobalEventChannel.INSTANCE.subscribeAlways(NudgeEvent.class, _groupSeparator::Nudge);
         GlobalEventChannel.INSTANCE.subscribeAlways(FriendMessageEvent.class, f -> {
             //监听好友消息
